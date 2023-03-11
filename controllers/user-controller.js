@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs')
+const _ = require('lodash')
 const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
@@ -52,12 +53,13 @@ const userController = {
       ]
     })
       .then(user => {
+        const comments = _.uniqBy(user.toJSON().Comments, 'Restaurant.id')
         if (req.user.id === user.id) {
           isOwner = true
         } else {
           isFollowed = req.user.Followings.some(f => f.id === user.id)
         }
-        res.render('users/profile', { user: user.toJSON(), isOwner, isFollowed })
+        res.render('users/profile', { user: user.toJSON(), isOwner, isFollowed, comments })
       })
       .catch(err => next(err))
   },
@@ -180,6 +182,7 @@ const userController = {
           ...user.toJSON(),
           // 計算追蹤者人數
           followerCount: user.Followers.length,
+          isOwner: req.user.id === user.id,
           // 判斷目前登入使用者是否已追蹤該 user 物件
           isFollowed: req.user.Followings.some(f => f.id === user.id)
         }))

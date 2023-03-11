@@ -23,7 +23,7 @@
         <p class="my-3"><b><em>{{user.email}}</em></b></p>
       </div>
       <div class="user-relationship my-5">
-        <p>{{user.Comments.length}} 已評論餐廳</p>
+        <p>{{comments.length}} 已評論餐廳 ( <small class="mt-0">{{user.Comments.length}} 總評論數</small> )</p>
         <p>{{user.FavoritedRestaurants.length}} 收藏的餐廳</p>
         <p>{{user.Followings.length}} 追蹤者</p>
         <p>{{user.Followers.length}} 追隨者</p>
@@ -54,7 +54,7 @@
       <div class="row user-followings mt-5 mx-5 border border-secondary rounded">
         {{#if user.Followings}}
         <p class="border-bottom border-secondary py-2 bg-secondary text-light rounded "><b>{{user.Followings.length}}
-            追蹤者:</b>
+            追蹤者 :</b>
         </p>
         <div class="row d-inline-flex p-2">
           {{#each user.Followings}}
@@ -80,7 +80,7 @@
       <div class="row user-followers mt-5 mx-5 border border-secondary rounded">
         {{#if user.Followers}}
         <p class="border-bottom border-secondary py-2 bg-secondary text-light rounded "><b>{{user.Followers.length}}
-            追隨者:</b>
+            追隨者 :</b>
         </p>
         <div class="row d-inline-flex p-2">
           {{#each user.Followers}}
@@ -107,11 +107,11 @@
       {{!-- 評論餐廳 --}}
       <div class="row user-commented-restaurants mt-5 mx-5 border border-secondary rounded">
         {{#if user.Comments}}
-        <p class="border-bottom border-secondary py-2 bg-secondary text-light rounded "><b>{{user.Comments.length}}
-            已評論餐廳:</b>
+        <p class="border-bottom border-secondary py-2 bg-secondary text-light rounded "><b>{{comments.length}}
+            已評論餐廳 :</b>
         </p>
         <div class="row d-inline-flex p-2">
-          {{#each user.Comments}}
+          {{#each comments}}
           <div class="col-2 mb-3">
             <a class="m-3" href="/restaurants/{{this.Restaurant.id}}">
               <img class="img-responsive center-block border rounded" src="{{this.Restaurant.image}}"
@@ -130,7 +130,7 @@
         {{#if user.FavoritedRestaurants}}
         <p class="border-bottom border-secondary py-2 bg-secondary text-light rounded ">
           <b>{{user.FavoritedRestaurants.length}}
-            已收藏餐廳:</b>
+            已收藏餐廳 :</b>
         </p>
         <div class="row d-inline-flex p-2">
           {{#each user.FavoritedRestaurants}}
