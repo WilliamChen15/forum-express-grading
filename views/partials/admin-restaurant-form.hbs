@@ -7,7 +7,11 @@
   <label class="form-label" for="categoryId">Category</label>
   <select class="form-control" id="categoryId" name="categoryId">
     {{#each categories}}
+    {{#if this.isDelete}}
+    <option value="{{this.id}}" {{#ifCond this.id ../restaurant.categoryId}} selected {{/ifCond}}>未分類</option>
+    {{else}}
     <option value="{{this.id}}" {{#ifCond this.id ../restaurant.categoryId}} selected {{/ifCond}}>{{this.name}}</option>
+    {{/if}}
     {{/each}}
   </select>
 </div>

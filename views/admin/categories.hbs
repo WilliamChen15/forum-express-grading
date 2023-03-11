@@ -31,20 +31,50 @@
   </thead>
   <tbody>
     {{#each categories}}
+    {{#if this.isDelete}}
+    {{else}}
     <tr>
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
       <td>
         <button type="button" class="btn btn-link">
-          <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}">
+          <a class="btn btn-primary" href="/admin/categories/{{this.id}}">
             Edit
           </a>
         </button>
-        <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-danger">Delete</button>
-        </form>
+        <button class="btn btn-danger ml-2 py-2" type="button" data-bs-toggle="modal"
+          data-bs-target="#delete{{this.id}}">
+          <span class="pl-1 d-none d-sm-inline-block">Delete</span>
+        </button>
+
+        <!--Delete Modal-->
+
+        <div class="modal fade" id="delete{{this.id}}" tabindex="-1" role="dialog"
+          aria-labelledby="Delete Message Modal" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title text-secondary font-weight-bold"><i class="fas fa-exclamation-triangle"></i>注意
+                </h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body text-secondary">
+                你確定要刪除「<span class="font-weight-bold">{{this.name}}</span> 」這個類別嗎？
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+                  <input type="submit" value="Delete" class="btn btn-danger">
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
       </td>
     </tr>
+    {{/if}}
     {{/each}}
   </tbody>
 </table>
