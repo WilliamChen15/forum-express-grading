@@ -1,41 +1,151 @@
 <div class="container">
-  <div class="row user-profile">
-    <div class="col">
+  <div class="row user-profile border border-secondary rounded">
+    <div class="col mt-5">
       {{#if user.image}}
-      <img class="img-responsive center-block col" src="{{user.image}}"
-        style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      <img class="img-responsive center-block border rounded m-3" src="{{user.image}}"
+        style="width: 350px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
       {{else}}
-      <img class="img-responsive center-block" src="https://i.imgur.com/MlICwQb.jpg"
-        style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      <img class="img-responsive center-block border rounded m-3" src="https://i.imgur.com/MlICwQb.jpg"
+        style="width: 350px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
       {{/if}}
+      <hr>
+      <div class="self-introduction">
+        {{#if user.selfIntroduction}}
+        <p class="m-2">{{user.selfIntroduction}}</p>
+        {{else}}
+        <p class="m-2">這個人顯然很懶。</p>
+        {{/if}}
+      </div>
     </div>
     <div class="col-8 mt-5">
-      <h1 class="my-2">{{user.name}}</h1>
-      <p class="my-3">{{user.email}}</p>
-      <button type="button" class="btn btn-link">
-        <a class="btn btn-link link-primary" href="/users/{{user.id}}/edit">
+      <div class="user">
+        <h1 class="my-2"><b>{{user.name}}</b></h1>
+        <p class="my-3"><b><em>{{user.email}}</em></b></p>
+      </div>
+      <div class="user-relationship my-5">
+        <p>{{user.Comments.length}} 已評論餐廳</p>
+        <p>{{user.FavoritedRestaurants.length}} 收藏的餐廳</p>
+        <p>{{user.Followings.length}} 追蹤者</p>
+        <p>{{user.Followers.length}} 追隨者</p>
+      </div>
+      <div class="edit">
+        {{#if isOwner}}
+        <a class="btn btn-primary " href="/users/{{user.id}}/edit">
           Edit
         </a>
-      </button>
+        {{else}}
+        {{#if isFollowed }}
+        <form action="/following/{{user.id}}?_method=DELETE" method="POST" style="display: contents;">
+          <button type="submit" class="btn btn-danger">取消追蹤</button>
+        </form>
+        {{else}}
+        <form action="/following/{{user.id}}" method="POST" style="display: contents;">
+          <button type="submit" class="btn btn-primary">追蹤</button>
+        </form>
+        {{/if}}
+        {{/if}}
+      </div>
     </div>
-    <a class="col-2 mx-auto mt-5 btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+    <a class="col-2 mx-auto my-5 btn btn-outline-secondary" href="javascript:history.back()">Back</a>
   </div>
-  <div class="row user-commented-restaurants mt-5 mx-5">
-
-    {{#if user.Comments}}
-    <p><b>{{user.Comments.length}} 已評論餐廳:</b></p>
-    <div class="d-inline-flex p-2">
-      {{#each user.Comments}}
-      <a href="/restaurants/{{this.Restaurant.id}}">
-        <img class="img-responsive center-block m-4" src="{{this.Restaurant.image}}" alt="Card image cap" width="60px"
-          height="60px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-      </a>
-
-      {{/each}}
+  <div class="row">
+    <div class="col-4">
+      {{!-- 追蹤者 --}}
+      <div class="row user-followings mt-5 mx-5 border border-secondary rounded">
+        {{#if user.Followings}}
+        <p class="border-bottom border-secondary py-2 bg-secondary text-light rounded "><b>{{user.Followings.length}}
+            追蹤者:</b>
+        </p>
+        <div class="row d-inline-flex p-2">
+          {{#each user.Followings}}
+          <div class="col-3 mb-3">
+            <a class="m-3" href="/users/{{this.id}}">
+              {{#if this.image}}
+              <img class="img-responsive center-block border rounded" src="{{this.image}}" alt="Card image cap"
+                width="60px" height="60px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+              {{else}}
+              <img class="img-responsive center-block border rounded" src="https://i.imgur.com/MlICwQb.jpg"
+                alt="Card image cap" width="60px" height="60px" style="transition: opacity 0.5s; opacity:0;"
+                onload="this.style.opacity=1;">
+              {{/if}}
+            </a>
+          </div>
+          {{/each}}
+        </div>
+        {{else}}
+        <p class="border-bottom border-secondary py-2 bg-secondary text-light rounded ">尚無追蹤者</p>
+        {{/if}}
+      </div>
+      {{!-- 追隨者 --}}
+      <div class="row user-followers mt-5 mx-5 border border-secondary rounded">
+        {{#if user.Followers}}
+        <p class="border-bottom border-secondary py-2 bg-secondary text-light rounded "><b>{{user.Followers.length}}
+            追隨者:</b>
+        </p>
+        <div class="row d-inline-flex p-2">
+          {{#each user.Followers}}
+          <div class="col-3 mb-3">
+            <a class="m-3" href="/users/{{this.id}}">
+              {{#if this.image}}
+              <img class="img-responsive center-block border rounded" src="{{this.image}}" alt="Card image cap"
+                width="60px" height="60px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+              {{else}}
+              <img class="img-responsive center-block border rounded" src="https://i.imgur.com/MlICwQb.jpg"
+                alt="Card image cap" width="60px" height="60px" style="transition: opacity 0.5s; opacity:0;"
+                onload="this.style.opacity=1;">
+              {{/if}}
+            </a>
+          </div>
+          {{/each}}
+        </div>
+        {{else}}
+        <p class="border-bottom border-secondary py-2 bg-secondary text-light rounded ">尚無追隨者</p>
+        {{/if}}
+      </div>
     </div>
-    {{else}}
-    <p>尚無餐廳評論</p>
-    {{/if}}
-
+    <div class="col-8">
+      {{!-- 評論餐廳 --}}
+      <div class="row user-commented-restaurants mt-5 mx-5 border border-secondary rounded">
+        {{#if user.Comments}}
+        <p class="border-bottom border-secondary py-2 bg-secondary text-light rounded "><b>{{user.Comments.length}}
+            已評論餐廳:</b>
+        </p>
+        <div class="row d-inline-flex p-2">
+          {{#each user.Comments}}
+          <div class="col-2 mb-3">
+            <a class="m-3" href="/restaurants/{{this.Restaurant.id}}">
+              <img class="img-responsive center-block border rounded" src="{{this.Restaurant.image}}"
+                alt="Card image cap" width="60px" height="60px" style="transition: opacity 0.5s; opacity:0;"
+                onload="this.style.opacity=1;">
+            </a>
+          </div>
+          {{/each}}
+        </div>
+        {{else}}
+        <p class="border-bottom border-secondary py-2 bg-secondary text-light rounded ">尚無餐廳評論</p>
+        {{/if}}
+      </div>
+      {{!-- 收藏餐廳 --}}
+      <div class="row user-favorited-restaurants mt-5 mx-5 border border-secondary rounded">
+        {{#if user.FavoritedRestaurants}}
+        <p class="border-bottom border-secondary py-2 bg-secondary text-light rounded ">
+          <b>{{user.FavoritedRestaurants.length}}
+            已收藏餐廳:</b>
+        </p>
+        <div class="row d-inline-flex p-2">
+          {{#each user.FavoritedRestaurants}}
+          <div class="col-2 mb-3">
+            <a class="m-3" href="/restaurants/{{this.id}}">
+              <img class="img-responsive center-block border rounded" src="{{this.image}}" alt="Card image cap"
+                width="60px" height="60px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+            </a>
+          </div>
+          {{/each}}
+        </div>
+        {{else}}
+        <p class="border-bottom border-secondary py-2 bg-secondary text-light rounded ">尚無餐廳收藏</p>
+        {{/if}}
+      </div>
+    </div>
   </div>
 </div>

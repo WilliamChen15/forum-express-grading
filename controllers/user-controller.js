@@ -41,13 +41,23 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const { id } = req.params
+    let isOwner = false
+    let isFollowed = false
     return User.findByPk(id, {
       include: [
-        { model: Comment, include: Restaurant }
+        { model: Comment, include: Restaurant },
+        { model: User, as: 'Followers' },
+        { model: User, as: 'Followings' },
+        { model: Restaurant, as: 'FavoritedRestaurants' }
       ]
     })
       .then(user => {
-        return res.render('users/profile', { user: user.toJSON() })
+        if (req.user.id === user.id) {
+          isOwner = true
+        } else {
+          isFollowed = req.user.Followings.some(f => f.id === user.id)
+        }
+        res.render('users/profile', { user: user.toJSON(), isOwner, isFollowed })
       })
       .catch(err => next(err))
   },
@@ -61,7 +71,7 @@ const userController = {
   },
   putUser: (req, res, next) => {
     const { id } = req.params
-    const { name } = req.body
+    const { name, selfIntroduction } = req.body
     if (!name) throw new Error('User name is required!')
     const { file } = req
     return Promise.all([
@@ -72,6 +82,7 @@ const userController = {
         if (!user) throw new Error("User didn't exist!")
         return user.update({
           name,
+          selfIntroduction,
           image: filePath || user.image
         })
       })
